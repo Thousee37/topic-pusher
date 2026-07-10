@@ -40,7 +40,8 @@ RSS_SOURCES = [
 ]
 
 # 输出目录（GitHub Actions 里是当前目录，本地可以改）
-OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", Path.home() / "Desktop"))
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", Path.home() / "Desktop" / "选题"))
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_FILE = OUTPUT_DIR / f"选题素材_{datetime.now(CST).strftime('%Y%m%d')}.md"
 
 # DeepSeek API
