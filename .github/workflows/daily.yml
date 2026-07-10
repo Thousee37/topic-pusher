@@ -1,0 +1,42 @@
+name: 每日选题推送
+
+on:
+  schedule:
+    # 北京时间每天早上 8:00 (UTC 00:00)
+    - cron: "0 0 * * *"
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 运行选题生成
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_BASE_URL: ${{ secrets.DEEPSEEK_BASE_URL || 'https://api.deepseek.com' }}
+        run: python main.py
+
+      - name: 提交并推送
+        run: |
+          git config user.name "topic-bot"
+          git config user.email "bot@topic-pusher.local"
+          git add *.md
+          if git diff --staged --quiet; then
+            echo "没有新文件，跳过提交"
+          else
+            git commit -m "📰 $(date +%Y%m%d) 选题素材"
+            git push
+          fi
