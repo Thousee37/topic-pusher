@@ -27,6 +27,7 @@ jobs:
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           DEEPSEEK_BASE_URL: ${{ secrets.DEEPSEEK_BASE_URL || 'https://api.deepseek.com' }}
+          OUTPUT_DIR: ${{ github.workspace }}
         run: python main.py
 
       - name: 提交并推送
