@@ -3,6 +3,7 @@
 # 由 launchd 触发
 
 REPO_DIR="$HOME/topic-pusher"
+DESKTOP_DIR="$HOME/Desktop/选题"
 LOG_FILE="$HOME/Library/Logs/topic-pusher.log"
 
 log() {
@@ -23,12 +24,13 @@ git pull --ff-only origin main 2>&1 | tee -a "$LOG_FILE"
 AFTER=$(git rev-parse HEAD 2>/dev/null)
 
 if [ "$BEFORE" != "$AFTER" ]; then
-    NEW_FILE=$(git diff --name-only "$BEFORE" "$AFTER" -- '*.md' | head -1)
-    if [ -n "$NEW_FILE" ]; then
-        log "✅ 新选题已拉取: $NEW_FILE"
-        # 显示通知
-        osascript -e "display notification \"今日选题素材已就绪\" with title \"📰 选题推送\" sound name \"Glass\""
-    fi
+    # 复制新生成的 md 文件到桌面/选题/
+    mkdir -p "$DESKTOP_DIR"
+    for f in $(git diff --name-only "$BEFORE" "$AFTER" -- '*.md'); do
+        cp "$REPO_DIR/$f" "$DESKTOP_DIR/"
+        log "✅ 新选题已复制: $f → 桌面/选题/"
+    done
+    osascript -e "display notification \"今日选题素材已就绪\" with title \"📰 选题推送\" sound name \"Glass\""
 else
     log "📭 无更新"
 fi
