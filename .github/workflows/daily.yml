@@ -1,10 +1,11 @@
 name: 每日选题推送
 
 on:
-  schedule:
-    # 北京时间早上 6:00 (UTC 22:00)，预留延迟余量
-    - cron: "0 22 * * *"
-  workflow_dispatch:  # 允许手动触发
+  # 定时任务已暂停（2026-08-06 暂停），想恢复时取消下面三行注释即可
+  # schedule:
+  #   # 北京时间早上 6:00 (UTC 22:00)，预留延迟余量
+  #   - cron: "0 22 * * *"
+  workflow_dispatch:  # 保留手动触发，暂停期间想跑可以手动运行
 
 permissions:
   contents: write
